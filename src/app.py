@@ -82,22 +82,17 @@ nltk.download('punkt', quiet=True)
 
 if len(reviewText) > 0 and reviewText!='':
 
-    print('\n' + reviewText +'\n')
-
     def calculate_complexity(review):
         return flesch_kincaid_grade(review)
 
     text_complexity = calculate_complexity(reviewText)
-    print(f'text_complexity: {text_complexity}')
 
     vaderSentimentAnalyzer = SentimentIntensityAnalyzer()
 
     scores = vaderSentimentAnalyzer.polarity_scores(str(clean_text))
 
-    compound_sentiment = scores['compound']
-    compound_sentiment = np.arctanh(compound_sentiment)
-
-    print(f'compound_sentiment: {compound_sentiment}')
+    compound_sentiment_original = scores['compound']
+    compound_sentiment = np.arctanh(compound_sentiment_original)
 
     #GET WORD COUNT
     # Function to count words in a text column
@@ -107,8 +102,6 @@ if len(reviewText) > 0 and reviewText!='':
 
     word_count = count_words(clean_text)
     word_count = stats.boxcox(word_count, -0.15804217863750494)
-
-    print(f'word_count: {word_count}')
 
     # Preprocessing for text data
     # Create a DataFrame with a single column
@@ -122,4 +115,6 @@ if len(reviewText) > 0 and reviewText!='':
 
     if st.button("Predict"):
         prediction = str(model.predict(X_test)[0]) 
-        st.write("Prediction:", prediction)
+        st.write("Predicted Review Score:", prediction)
+        st.write("Text Complexity:", text_complexity)
+        st.write("Sentiment:", compound_sentiment_original)
